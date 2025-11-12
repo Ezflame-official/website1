@@ -213,7 +213,7 @@
           document.querySelectorAll('.counter').forEach(el => {
             el.style.visibility = countersVisible ? 'visible' : 'hidden';
           });
-          if (countersVisible) loadCounters();
+          if (countersVisible) loadCounters(); // обновляем при включении
         }
       });
     
@@ -240,23 +240,23 @@
             counter.style.marginLeft = '6px';
             counter.style.opacity = '0.7';
             counter.style.fontSize = '0.9em';
-            counter.style.visibility = 'hidden'; // <-- НЕ занимает место!
+            counter.style.visibility = 'hidden';
             const textDiv = btn.querySelector('div > div:first-child') || btn.querySelector('div');
             if (textDiv) textDiv.appendChild(counter);
           }
     
-          // Показываем (0) сразу или актуальное значение
+          // Показываем актуальное значение
           fetch(`https://api.countapi.xyz/get/ezflame.us/${item.key}`)
             .then(r => r.json())
             .then(d => counter.textContent = ` (${d.value})`)
-            .catch(() => counter.textContent = ' (0)'); // <-- нули всегда!
+            .catch(() => counter.textContent = ' (0)');
     
-          // Увеличиваем при клике
+          // УВЕЛИЧИВАЕМ ВСЕГДА ПРИ КЛИКЕ
           btn.addEventListener('click', () => {
             fetch(`https://api.countapi.xyz/hit/ezflame.us/${item.key}`)
               .then(r => r.json())
               .then(d => {
-                if (countersVisible) counter.textContent = ` (${d.value})`;
+                counter.textContent = ` (${d.value})`; // <-- ВСЕГДА обновляем!
               });
           });
         });
@@ -266,6 +266,7 @@
     </script>
 </body>
 </html>
+
 
 
 
