@@ -203,66 +203,70 @@
     </svg>
 
     <script>
-        // === СЕКРЕТНЫЕ СЧЁТЧИКИ — ВИДНЫ ТОЛЬКО ТЕБЕ ===
-        let countersVisible = false;
-
-        // Секретная комбинация: Ctrl + Shift + K (можно поменять)
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && e.shiftKey && e.key === 'K') {
-            countersVisible = !countersVisible;
-            document.querySelectorAll('.counter').forEach(el => {
-                el.style.display = countersVisible ? 'inline' : 'none';
-            });
-            if (countersVisible) loadCounters();
-            }
-        });
-
-        function loadCounters() {
-            const buttons = [
-            { sel: 'a[href*="drive.google.com"]',           key: "assembly-video" },
-            { sel: 'a[href*="youtube"]',                    key: "youtube-loop" },
-            { sel: 'a[href*="amazon.com/dp/B0FV2NFH1P"]',    key: "amazon-review" },
-            { sel: 'a[href^="mailto:"]',                    key: "email" },
-            { sel: 'a[href*="instagram.com"]',              key: "instagram" },
-            { sel: 'a[href*="facebook.com"]',               key: "facebook" },
-            { sel: 'a[href*="wa.me"]',                      key: "whatsapp" }
-            ];
-
-            buttons.forEach(item => {
-            const btn = document.querySelector(item.sel);
-            if (!btn) return;
-
-            let counter = btn.querySelector('.counter');
-            if (!counter) {
-                counter = document.createElement('span');
-                counter.className = 'counter';
-                counter.style.marginLeft = '6px';
-                counter.style.opacity = '0.7';
-                counter.style.fontSize = '0.9em';
-                counter.style.display = 'none'; // скрыто по умолчанию
-                btn.querySelector('div > div').appendChild(counter);
-            }
-
-            // Загружаем значение
-            fetch(`https://api.countapi.xyz/get/ezflame.us/${item.key}`)
-                .then(res => res.json())
-                .then(data => counter.textContent = ` (${data.value})`)
-                .catch(() => {});
-
-            // Увеличиваем при клике
-            btn.addEventListener('click', () => {
-                fetch(`https://api.countapi.xyz/hit/ezflame.us/${item.key}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (countersVisible) counter.textContent = ` (${data.value})`;
-                });
-            });
-            });
+      // === СЕКРЕТНЫЕ СЧЁТЧИКИ — РАБОТАЕТ В EDGE, CHROME, FIREFOX ===
+      let countersVisible = false;
+    
+      // Комбинация Ctrl + Shift + K
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'K') {
+          e.preventDefault(); // <-- ЭТО ГЛАВНОЕ ДЛЯ EDGE
+          countersVisible = !countersVisible;
+          document.querySelectorAll('.counter').forEach(el => {
+            el.style.display = countersVisible ? 'inline' : 'none';
+          });
+          if (countersVisible) loadCounters();
         }
-
-        // Автозагрузка при старте (но остаются скрытыми)
-        document.addEventListener("DOMContentLoaded", loadCounters);
-        </script>
+      });
+    
+      function loadCounters() {
+        const buttons = [
+          { sel: 'a[href*="drive.google.com"]', key: "assembly-video" },
+          { sel: 'a[href*="youtu.be"]', key: "youtube-loop" },
+          { sel: 'a[href*="amazon.com/dp/B0FV2NFH1P"]', key: "amazon-review" },
+          { sel: 'a[href^="mailto:"]', key: "email" },
+          { sel: 'a[href*="instagram.com"]', key: "instagram" },
+          { sel: 'a[href*="facebook.com"]', key: "facebook" },
+          { sel: 'a[href*="wa.me"]', key: "whatsapp" }
+        ];
+    
+        buttons.forEach(item => {
+          const btn = document.querySelector(item.sel);
+          if (!btn) return;
+    
+          let counter = btn.querySelector('.counter');
+          if (!counter) {
+            counter = document.createElement('span');
+            counter.className = 'counter';
+            counter.style.marginLeft = '6px';
+            counter.style.opacity = '0.7';
+            counter.style.fontSize = '0.9em';
+            counter.style.display = 'none';
+            const titleDiv = btn.querySelector('div > div:first-child');
+            if (titleDiv) titleDiv.appendChild(counter);
+          }
+    
+          // Загружаем счётчик
+          fetch(`https://api.countapi.xyz/get/ezflame.us/${item.key}`)
+            .then(res => res.json())
+            .then(data => counter.textContent = ` (${data.value})`)
+            .catch(() => {});
+    
+          // Увеличиваем при клике
+          btn.addEventListener('click', function(e) {
+            fetch(`https://api.countapi.xyz/hit/ezflame.us/${item.key}`)
+              .then(res => res.json())
+              .then(data => {
+                if (countersVisible) counter.textContent = ` (${data.value})`;
+              })
+              .catch(() => {});
+          });
+        });
+      }
+    
+      // Запускаем сразу
+      document.addEventListener("DOMContentLoaded", loadCounters);
+    </script>
 </body>
 </html>
+
 
