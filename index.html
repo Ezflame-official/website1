@@ -208,7 +208,7 @@
     
       // Комбинация Ctrl + Shift + K
       document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'K') {
+        if (e.ctrlKey && e.shiftKey && e.altKey && e.key.toUpperCase() === 'K') {
           e.preventDefault(); // <-- ЭТО ГЛАВНОЕ ДЛЯ EDGE
           countersVisible = !countersVisible;
           document.querySelectorAll('.counter').forEach(el => {
@@ -268,5 +268,6 @@
     </script>
 </body>
 </html>
+
 
 
